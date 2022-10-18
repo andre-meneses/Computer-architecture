@@ -9,7 +9,7 @@
   Lmax: .word 10
 
   # Tamanho máximo do vetor V
-  TAM: .word 36
+  TAM: .word 35
   
   # Garantindo que a leitura da memória deve estar alinhada para words de 4 bytes
   # (a leitura ou escrita da memória será feita tomando 2^2 endereços de uma só vez)
@@ -28,9 +28,25 @@
 .text
 
   main:
-    li $t1, 0   #contador
+    li $t1, 0
+    li $t2, 0
     la $s1, V   #Endereço do vetor
+    la $s2, H   #Endereço do vetor de contadores
 
+  loop:
+    lw $t2, 0($s1) 
+
+    multi $t3, $t2, 4  
+    add $t4, $s2, $t3
+
+    lw $t5, 0($t4)
+    addi $t5, $t5, 1
+    sw $t5, 0($t4) 
+
+    sll $s1, $s1, 2
+    addi $t1, $t1, 1
+
+    bne $t1, TAM, loop
   
   # Final do programa
   # Chamada do sistema para finalizar (não pode ser modificado)
